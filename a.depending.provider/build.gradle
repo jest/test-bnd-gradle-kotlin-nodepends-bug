@@ -16,5 +16,8 @@ repositories {
 
 dependencies {
   compile "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
+  // without the below dependency Kotlin source is compiled before
+  // b.dependant.api is compiled, resulting in error
+  //compile project(":b.dependant.api")
 }
 
