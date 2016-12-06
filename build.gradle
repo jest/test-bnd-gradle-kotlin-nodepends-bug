@@ -10,8 +10,13 @@ import aQute.bnd.osgi.Constants
 
 /* Add bnd gradle plugin as a script dependency */
 buildscript {
+  ext.kotlin_version = '1.0.5'
+  repositories {
+    mavenCentral()
+  }
   dependencies {
     classpath bndPlugin
+    classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
   }
 }
 
@@ -27,6 +32,17 @@ subprojects {
   def bndProject = bndWorkspace.getProject(name)
   if (bndProject != null) {
     plugins.apply 'biz.aQute.bnd'
+    plugins.withType(org.jetbrains.kotlin.gradle.plugin.KotlinPluginWrapper) {
+      bndProject.getDependson()*.getName().each { dependency ->
+        compileKotlin.dependsOn(":${dependency}:assemble")
+      }
+      repositories {
+      	mavenCentral()
+      }
+      dependencies {
+      	compile "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
+      }
+    }
   }
 }
 
